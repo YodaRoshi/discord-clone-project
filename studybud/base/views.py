@@ -60,10 +60,10 @@ def registerPage(request):
             # we are not saving data here because we want to clean up a bit
             user.username = user.username.lower()
             user.save()
-            login(request,user)
+            login(request, user)
             return redirect('base:home')
         else:
-            messages.error(request,'An error occured during registration')
+            messages.error(request, 'An error occured during registration')
 
     return render(request, 'base/login_register.html', {'form': form})
 
@@ -78,7 +78,10 @@ def home(request):
     )
 
     topics = Topic.objects.all()
-    context = {'rooms': rooms, 'topics': topics}
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+
+    context = {'rooms': rooms, 'topics': topics,
+               'room_messages': room_messages}
 
     return render(request, "base/home.html", context)
 
@@ -87,15 +90,16 @@ def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all().order_by('-created')
     participants = room.participants.all()
-    if request.method =='POST':
+    if request.method == 'POST':
         message = Message.objects.create(
-            user = request.user,
-            room = room,
-            body= request.POST.get('body')
-            )
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
         room.participants.add(request.user)
-        return redirect('base:room',pk=room.id)
-    context = {'room': room, 'room_messages': room_messages, 'participants':participants}
+        return redirect('base:room', pk=room.id)
+    context = {'room': room, 'room_messages': room_messages,
+               'participants': participants}
     return render(request, "base/room.html", context)
 
 
@@ -141,6 +145,7 @@ def deleteRoom(request, pk):
         room.delete()
         return redirect('base:home')
     return render(request, 'base/delete.html', {'obj': room})
+
 
 @login_required(login_url='base:login')
 def deleteMessage(request, pk):
