@@ -28,11 +28,12 @@
             {% endif %}
         </div>
         <div class="activities__boxContent">
-            <p>replied to post “<a href="{% url 'base:room' message.id %}">{{message.room}}</a>”</p>
+            <p>replied to post “<a href="{% url 'base:room' message.room.id %}">{{message.room}}</a>”</p>
             <div class="activities__boxRoomContent">
                 {{message.body}}
             </div>
         </div>
     </div>
     {% endfor %}
+
 </div>
