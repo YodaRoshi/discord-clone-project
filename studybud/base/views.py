@@ -98,6 +98,9 @@ def room(request, pk):
 
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
+    if user.is_active is False:
+        if request.user.is_superuser is False:
+            return HttpResponse('You are not allowed here')
     rooms = user.room_set.all()
     room_messages = user.message_set.all()
     topics = Topic.objects.all()
@@ -133,8 +136,9 @@ def updateRoom(request, pk):
     form = RoomForm(instance=room)
     topics = Topic.objects.all()
 
-    if request.user != room.host:
-        return HttpResponse('You are not allowed here')
+    if request.user is not room.host:
+        if request.user.is_superuser is False:
+            return HttpResponse('You are not allowed here')
 
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
@@ -155,13 +159,15 @@ def updateRoom(request, pk):
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
 
-    if request.user != room.host:
-        return HttpResponse('You are not allowed here')
+    if request.user is not room.host:
+        if request.user.is_superuser is False:
+            return HttpResponse('You are not allowed here')
 
     if request.method == 'POST':
-        topic = Topic.objects.get(pk=room.topic.pk)
-        if topic.room_set.count() == 1:
-            topic.delete()
+        if room.topic is not None:
+            topic = Topic.objects.get(pk=room.topic.pk)
+            if topic.room_set.count() == 1:
+                topic.delete()
         room.delete()
         return redirect('base:home')
     return render(request, 'base/delete.html', {'obj': room})
@@ -170,11 +176,14 @@ def deleteRoom(request, pk):
 @login_required(login_url='base:login')
 def deleteMessage(request, pk):
     message = Message.objects.get(id=pk)
-
-    if request.user != message.user:
-        return HttpResponse('You are not allowed here')
+    if request.user is not message.user:
+        if request.user.is_superuser is False:
+            return HttpResponse('You are not allowed here')
 
     if request.method == 'POST':
+        if message.user.message_set.filter(room=message.room).count() == 1:
+            room = Room.objects.get(id=message.room.id)
+            room.participants.remove(message.user)
         message.delete()
         return redirect('base:home')
     return render(request, 'base/delete.html', {'obj': message})

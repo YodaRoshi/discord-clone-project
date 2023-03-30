@@ -1169,9 +1169,24 @@ a {
 
 
 /* Additional */
+a.room__author.disabled {
+  color: var(--color-light-gray);
+  text-decoration: none;
+}
 
+a.roomListRoom__author.disabled {
+  color: var(--color-light-gray);
+  text-decoration: none;
+}
 
+a.thread__authorInfo.disabled {
+  color: var(--color-light-gray);
+  text-decoration: none;
+}
 
-
+a.participant.disabled span {
+  color: var(--color-light-gray);
+  text-decoration: none;
+}
 
 /* Additional */
