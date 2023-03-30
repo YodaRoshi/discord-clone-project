@@ -1,3 +1,5 @@
 Django==4.1.2
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
+Pillow==9.4.0
+django-livereload-server==0.4

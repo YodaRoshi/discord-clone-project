@@ -1,6 +1,5 @@
 {% extends 'main.html' %}
 {% block content %}
-
 <main class="update-account layout">
   <div class="container">
     <div class="layout__box">
@@ -17,15 +16,28 @@
           <h3>Edit your profile</h3>
         </div>
       </div>
-      <div class="layout__body">
-        <form class="form" method="POST" action="{% url 'base:update-user' %}">
+
+      <div class="settings layout__body">
+        <div class="settings__avatar">
+          <div class="avatar avatar--large ">
+            <img id="preview-avatar" src="{{form.initial.avatar.url}}" />
+          </div>
+        </div>
+        <form class="form" method="POST" action="{% url 'base:update-user' %}" enctype="multipart/form-data">
           {% csrf_token %}
 
           {% for field in form %}
+          {% if field.label != "Avatar" %}
           <div class="form__group">
-            <label for="profile_pic">{{field.label}}</label>
+            <label for="{{ field.auto_id }}">{{field.label}}</label>
             {{field}}
           </div>
+          {% else %}
+          <div class="form__group form__avatar">
+            <label for="avatar">Change Profile Picture</label>
+            <input class="form__hide" type="file" name="avatar" id="avatar" accept="image/png, image/gif, image/jpeg" />
+          </div>
+          {% endif %}
           {% endfor %}
 
           <div class="form__action">
