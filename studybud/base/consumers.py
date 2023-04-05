@@ -1,22 +1,8 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from channels.db import database_sync_to_async
 from .models import Message, Room, User
-from .serializers import MessageSerializer
-from django.utils.timezone import localdate
-
-import pytz
-from datetime import datetime, timezone
-
-utc=pytz.UTC
-
-from dateutil.relativedelta import relativedelta
-from django.utils.timesince import TIME_STRINGS as timesince_time_strings
-from django.utils.html import avoid_wrapping
-from django.utils.translation import gettext, get_language
-import inflect 
-p = inflect.engine()
+from .helpers import timesince
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -56,8 +42,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     
     async def send_message(self,event):
         obj = event['message']
-        time_now = datetime.utcnow().replace(tzinfo=timezone.utc)
-        created = await self.timesince(time_now,obj.created)
+        created = timesince(obj.created)
+
         json_str = json.dumps({
             'message_id' : obj.id,
             'user_id': obj.user.id,
@@ -82,36 +68,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         room.participants.add(user)
         return message
-    
-    
-    @sync_to_async
-    def async_message_serializer(self,obj):
-        return MessageSerializer(obj,many=False).data
-    
-
-    @sync_to_async
-    def timesince(self,d, now):
-        # test = datetime(2026, 6, 30, 8, 3, 2, 345784, tzinfo=timezone.utc)
-        # test2 = datetime(2023, 7, 1, 10, 2, 1, 345784, tzinfo=timezone.utc)
-        # delta = relativedelta(test, test2)
-
-        delta = relativedelta(now, d)
-        years = delta.years
-        months = delta.months
-        weeks = delta.days // 7
-        days = delta.days - weeks * 7
-        hours = delta.hours
-        minutes = delta.minutes
-
-        if (years > 0):
-            return str(years) + " " + p.plural("year", years)
-        elif (months > 0):
-            return str(months) + " " + p.plural("month", months)
-        elif (weeks > 0):
-            return str(weeks) + " " + p.plural("week", weeks)
-        elif (days > 0):
-            return str(days) + " " + p.plural("day", days)
-        elif (hours > 0):
-            return str(hours) + " " + p.plural("hour", days)
-        else:
-            return str(minutes)+ " " + p.plural("minute", days)
