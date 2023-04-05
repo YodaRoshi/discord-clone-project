@@ -92,8 +92,8 @@ DATABASES = {
         "NAME": 'studybud_db',
         "USER": 'root',
         'PASSWORD':'Dominant7#5#9',
-        'HOST':'localhost',
-        'PORT': '3306'
+        'HOST': '2.tcp.ngrok.io',
+        'PORT': '13025',
     }
 }
 

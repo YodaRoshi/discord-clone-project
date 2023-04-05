@@ -7,8 +7,8 @@ show  recent activities from only subscribing room.
 syce and synce await
 lazy load
 code first appoach
-set up database
+Done - set up database
 
 typing effect
 
-room name can only contains aphamunerics hyphens unserscores or  priods
+Done - room name can only contains aphamunerics hyphens unserscores or  priods
