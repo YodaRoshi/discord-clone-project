@@ -49,7 +49,9 @@
         </svg>
         {{room.participants.all.count}} Joined
     </a>
-    <p class="roomListRoom__topic">{{room.topic}}</p>
+    <a href="{% url 'base:home' %}?q={{room.topic}}">
+        <p class="roomListRoom__topic">{{room.topic}}</p>
+    </a>
 </div>
 </div>
 {% endfor %}

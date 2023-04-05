@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "base.apps.BaseConfig",
 ]
+
+# what model is used for autentication.
 AUTH_USER_MODEL = 'base.User'
 
 MIDDLEWARE = [

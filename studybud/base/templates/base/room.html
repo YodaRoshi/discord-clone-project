@@ -79,7 +79,7 @@
           <div class="room__details">
             {{room.description}}
           </div>
-          <span class="room__topics">{{room.topic}}</span>
+          <a href="{% url 'base:home' %}?q={{room.topic}}" class="room__topics">{{room.topic}}</a>
 
         </div>
 
@@ -126,7 +126,7 @@
       <div class="room__message">
         <form action="." method="POST" onsubmit="return false">
           {% csrf_token %}
-          <input name="body" id="room-message-input" placeholder="Write your message here..." />
+          <input name="body" id="room-message-input" autocomplete="off" placeholder="Write your message here..." />
         </form>
       </div>
     </div>

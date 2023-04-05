@@ -2,14 +2,20 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Message, Room, User
-from .helpers import timesince
+from .helpers import time_since
+import re
 
+patterns = '[^a-zA-Z0-9_\.-]'
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name'].replace(' ','_')
-        self.room_group_name = 'chat_%s' % self.room_name
 
+    async def connect(self):
+        # Group name must be a valid unicode string with length < 100 
+        # containing only ASCII alphanumerics, hyphens, underscores, or periods, 
+        
+        self.room_name = re.sub(patterns,'-',self.scope['url_route']['kwargs']['room_name'])
+        self.room_group_name = 'chat_%s' % self.room_name
+        self.room_group_name = self.room_group_name[0:100]
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -37,28 +43,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'send_message',
                 'message': message,
             }
-        )   
+        )
 
-    
-    async def send_message(self,event):
+    async def send_message(self, event):
         obj = event['message']
-        created = timesince(obj.created)
+        created = time_since(obj.created)
 
         json_str = json.dumps({
-            'message_id' : obj.id,
+            'message_id': obj.id,
             'user_id': obj.user.id,
             'username': obj.user.username,
             'body': obj.body,
             'avatar': obj.user.avatar.url,
-            'created' : created,
-            'is_superuser' : obj.user.is_superuser,
-            'is_active' : True
-        },indent=4)
+            'created': created,
+            'is_superuser': obj.user.is_superuser,
+            'is_active': True
+        }, indent=4)
 
         await self.send(text_data=json_str)
 
     @sync_to_async
-    def save_message(self,username, room_name,body):
+    def save_message(self, username, room_name, body):
         user = User.objects.get(username=username)
         room = Room.objects.get(name=room_name)
         message = Message.objects.create(

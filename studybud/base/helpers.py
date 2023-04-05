@@ -4,15 +4,15 @@ import inflect
 
 p = inflect.engine()
 
-def timesince(since):
-    # test = datetime(2026, 6, 30, 8, 3, 2, 345784, tzinfo=timezone.utc)
-    # test2 = datetime(2023, 7, 1, 10, 2, 1, 345784, tzinfo=timezone.utc)
-    # delta = relativedelta(test, test2)
+def time_since(since):
+    test = datetime(2026, 6, 30, 8, 3, 2, 345784, tzinfo=timezone.utc)
+    test2 = datetime(2023, 7, 1, 10, 2, 1, 345784, tzinfo=timezone.utc)
+    delta = relativedelta(test, test2)
     now = datetime.utcnow().replace(tzinfo=timezone.utc)
     delta = relativedelta(now, since)
     years = delta.years
     months = delta.months
-    weeks = delta.days // 7
+    weeks = delta.weeks
     days = delta.days - weeks * 7
     hours = delta.hours
     minutes = delta.minutes
