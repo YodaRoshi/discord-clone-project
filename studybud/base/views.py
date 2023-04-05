@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Room, Topic, Message, User
+from .models import Room, Topic, Message
 from .forms import RoomForm, UserForm, MyUserCreationForm
+
+User = get_user_model()
+
 
 def loginPage(request):
 
@@ -81,8 +84,6 @@ def home(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    room_messages = room.message_set.all().order_by('-created')
-    participants = room.participants.all()
     if request.method == 'POST':
         message = Message.objects.create(
             user=request.user,
@@ -91,6 +92,8 @@ def room(request, pk):
         )
         room.participants.add(request.user)
         return redirect('base:room', pk=room.id)
+    room_messages = room.message_set.all().order_by('created')
+    participants = room.participants.all()
     context = {'room': room, 'room_messages': room_messages,
                'participants': participants}
     return render(request, "base/room.html", context)

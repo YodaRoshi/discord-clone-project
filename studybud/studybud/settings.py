@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['.ngrok.io','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "base.apps.BaseConfig",
 ]
+
+# what model is used for autentication.
 AUTH_USER_MODEL = 'base.User'
 
 MIDDLEWARE = [
@@ -70,18 +74,36 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'studybud.asgi.application'
 WSGI_APPLICATION = "studybud.wsgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": 'studybud_db',
+        "USER": 'root',
+        'PASSWORD':'Dominant7#5#9',
+        'HOST':'localhost',
+        'PORT': '3306'
     }
 }
+
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -121,9 +143,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 MEDIA_URL = "/images/"
 
-STATICFILES_DIRS = [BASE_DIR / "static",] 
-
- 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    BASE_DIR / 'base/static/base',
+]
 MEDIA_ROOT =    BASE_DIR / 'static/images'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
