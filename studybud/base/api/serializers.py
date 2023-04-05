@@ -2,9 +2,10 @@
 # serializers are classes that take a certain model that we want to serialize and turn it into a json object.
 
 from rest_framework.serializers import ModelSerializer
-from .models import Room, Message, User, Topic
+from ..models import Room, Message, Topic
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User

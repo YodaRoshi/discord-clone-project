@@ -1,9 +1,13 @@
-import json
+
+from django.contrib.auth import get_user_model
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from .models import Message, Room, User
+from .models import Message, Room
 from .helpers import time_since
+import json
 import re
+
+User = get_user_model()
 
 patterns = '[^a-zA-Z0-9_\.-]'
 
