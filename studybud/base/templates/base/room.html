@@ -1,10 +1,12 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block content %}
 
 <main class="profile-page layout layout--2">
   <div class="container">
     <!-- Room Start -->
     <div class="room">
+
       <div class="room__top">
         <div class="room__topLeft">
           <a href="{{request.META.HTTP_REFERER}}">
@@ -51,7 +53,9 @@
 
 
       </div>
+
       <div class="room__box scroll">
+        <!-- Room description -->
         <div class="room__header scroll">
           <div class="room__info">
             <h3>{{room.name}}</h3>
@@ -78,10 +82,11 @@
           <span class="room__topics">{{room.topic}}</span>
 
         </div>
+
         <div class="room__conversation">
-          <div class="threads scroll">
+          <div class="threads scroll" id="threads-scroll">
             {% for message in room_messages %}
-            <div class="thread">
+            <div class="thread" id="thread">
               <div class="thread__top">
                 <div class="thread__author">
                   {% if message.user.is_active %}
@@ -116,11 +121,12 @@
             {% endfor %}
           </div>
         </div>
+
       </div>
       <div class="room__message">
-        <form action="" method="POST">
+        <form action="." method="POST" onsubmit="return false">
           {% csrf_token %}
-          <input name="body" placeholder="Write your message here..." />
+          <input name="body" id="room-message-input" placeholder="Write your message here..." />
         </form>
       </div>
     </div>
@@ -147,8 +153,15 @@
           {% endfor %}
       </div>
     </div>
-    <!--  End -->
+    <!-- Participants End -->
+
   </div>
 </main>
-<script src="script.js"></script>
+<!-- Converting Django template variabels so they are accessible from JS Code -->
+{{ room.name|json_script:"json-roomname" }}
+{{ request.user.is_superuser |json_script:"json-superuser" }}
+{{ request.user.username|json_script:"json-username" }}
+<!-- JS for websocket -->
+<script type="text/javascript" src="{% static 'js/room.js' %}"></script>
+
 {% endblock %}

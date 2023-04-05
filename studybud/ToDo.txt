@@ -1,0 +1,4 @@
+message.user.is_active
+message.user.id
+message.user.avatar.url
+message.created
