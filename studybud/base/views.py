@@ -12,6 +12,28 @@ from .forms import RoomForm, UserForm, MyUserCreationForm
 User = get_user_model()
 
 
+def load(request):
+    fh = open('base/data.txt').readlines()
+
+    for line in fh:
+        row = line.split(',')
+        username, email,password, firstname, lastname,cellphone, is_staff, is_superuser = [i.strip() for i in row]
+
+        if User.objects.filter(email=email).first() is None:
+            user = User.objects.create_user(
+                username=username, 
+                email=email, 
+                password=password,
+                is_staff=eval(is_staff),
+                is_superuser=eval(is_superuser),
+            )
+            print(f'{email} has beencreated')
+        else:
+            print(f'{email} already exists')
+        
+    return HttpResponse('Users Created')
+
+
 def loginPage(request):
 
     page = 'login'
@@ -214,3 +236,25 @@ def topicsPage(request):
 def activitiesPage(request):
     room_messages = Message.objects.all()
     return render(request,'base/activity.html', {'room_messages':room_messages})
+
+
+def load(request):
+    fh = open('base/data.txt').readlines()
+
+    for line in fh:
+        row = line.split(',')
+        username, email,password, firstname, lastname,cellphone, is_staff, is_superuser = [i.strip() for i in row]
+
+        if User.objects.filter(email=email).first() is None:
+            user = User.objects.create_user(
+                username=username, 
+                email=email, 
+                password=password,
+                is_staff=eval(is_staff),
+                is_superuser=eval(is_superuser),
+            )
+            print(f'{email} has beencreated')
+        else:
+            print(f'{email} already exists')
+        
+    return HttpResponse('Users Created')
