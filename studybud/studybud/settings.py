@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    'livereload',
     "django.contrib.staticfiles",
     "base.apps.BaseConfig",
 ]
@@ -53,7 +52,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = "studybud.urls"
@@ -92,8 +90,8 @@ DATABASES = {
         "NAME": 'studybud_db',
         "USER": 'root',
         'PASSWORD':'Dominant7#5#9',
-        'HOST': '2.tcp.ngrok.io',
-        'PORT': '13025',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 

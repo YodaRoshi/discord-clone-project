@@ -1,7 +1,9 @@
+asgiref==3.6.0
+channels==4.0.0
 Django==4.1.2
 djangorestframework==3.14.0
-django-cors-headers==3.14.0
-Pillow==9.4.0
-django-livereload-server==0.4
-channels-4.0.0
-daphne-4.0.0
+inflect==6.0.4
+python_dateutil==2.8.2
+daphne==4.0.0
+mysqlclient==2.1.1
+Pillow==9.5.0
